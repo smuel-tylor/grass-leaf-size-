@@ -3,7 +3,7 @@
 The two folders shared here present code used by *Baird et al* 
 - *Kew*
   -- Multiple regression analysis of a 1752 species dataset of leaf dimensions and average climate across species ranges, including validation based on plotting of residuals
-  > !! The size of the dataset and number of models makes this code very intensive to run
+  > !! The size of the dataset and number of models makes the Kew code very intensive to run
 
 
 - *LA27*
