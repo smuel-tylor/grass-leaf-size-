@@ -95,17 +95,17 @@ C3C4.ANOVA <- function(trt, data, tree){
 		#extract coefficients
 		anova.fr[i, c("LS.C3.mean", "LS.C4.mean")] <- coef(LS.coef)[c(1, 2)]
 		anova.fr[i, c("LS.C3.sem", "LS.C4.sem")] <- summary(LS.coef)$tTable[c(1, 2), 2]
-		anova.fr[i, c("LS.F")] <- round(anova(LS.FP)$F[2], 2)
-		anova.fr[i, c("LS.P")] <- round(anova(LS.FP)$p[2], 4)
+		anova.fr[i, c("LS.F")] <- anova(LS.FP)$F[2]
+		anova.fr[i, c("LS.P")] <- anova(LS.FP)$p[2]
 
 		anova.fr[i, c("PGLS.C3.mean", "PGLS.C4.mean")] <- coef(PGLS.coef)[c(1, 2)]
 		anova.fr[i, c("PGLS.C3.sem", "PGLS.C4.sem")] <- summary(PGLS.coef)$tTable[c(1, 2), 2]
-		anova.fr[i, c("PGLS.F")] <- round(anova(PGLS.FP)$F[2], 2)
-		anova.fr[i, c("PGLS.P")] <- round(anova(PGLS.FP)$p[2], 4)
-		anova.fr[i, c("PGLS.lambda")] <- round(opt.l$maximum, 3)
+		anova.fr[i, c("PGLS.F")] <- anova(PGLS.FP)$F[2]
+		anova.fr[i, c("PGLS.P")] <- anova(PGLS.FP)$p[2]
+		anova.fr[i, c("PGLS.lambda")] <- opt.l$maximum
 		#approx p-value for lambda == 0
 		pL0 <- 1 - pchisq(2 * (PGLS.coef$logLik - LS.coef$logLik), 1)
-		anova.fr[i, c("PGLS.lambda.P")] <- round(pL0, 4)
+		anova.fr[i, c("PGLS.lambda.P")] <- pL0
 		
 		#extract residuals
 		LS.res[ , ti] <- resid(LS.coef)
@@ -113,23 +113,23 @@ C3C4.ANOVA <- function(trt, data, tree){
 		PGLS.res[ , ti] <- resid(PGLS.coef, type = "normalized")
  		#normality testing for LS.res using Anderson Darling
 		LS.AD <- ad.test(scale(LS.res[ , ti]))
-		anova.fr[i, "LS.resid.norm.stat"] <- round(LS.AD$statistic, 2)
-		anova.fr[i, "LS.resid.norm.P"] <- round(LS.AD$p.value, 4)
+		anova.fr[i, "LS.resid.norm.stat"] <- LS.AD$statistic
+		anova.fr[i, "LS.resid.norm.P"] <- LS.AD$p.value
 
 		#homogeneity testing for LS.res using Bartlett
 		LS.B <- bartlett.test(scale(LS.res[ , ti]) ~ factor(di[ , "C3C4"]))
-		anova.fr[i, "LS.resid.homo.stat"] <- round(LS.B$statistic, 2)
-		anova.fr[i, "LS.resid.homo.P"] <- round(LS.B$p.value, 4)
+		anova.fr[i, "LS.resid.homo.stat"] <- LS.B$statistic
+		anova.fr[i, "LS.resid.homo.P"] <- LS.B$p.value
 
 		#normality testing for PGLS.res using Anderson Darling
 		PGLS.AD <- ad.test(scale(PGLS.res[ , ti]))
-		anova.fr[i, "PGLS.phyloresid.norm.stat"] <- round(PGLS.AD$statistic, 2)
-		anova.fr[i, "PGLS.phyloresid.norm.P"] <- round(PGLS.AD$p.value, 4)
+		anova.fr[i, "PGLS.phyloresid.norm.stat"] <- PGLS.AD$statistic
+		anova.fr[i, "PGLS.phyloresid.norm.P"] <- PGLS.AD$p.value
 
 		#homogeneity testing for PGLS.res using Bartlett
 		PGLS.B <- bartlett.test(scale(PGLS.res[ , ti]) ~ factor(di[ , "C3C4"]))
-		anova.fr[i, "PGLS.phyloresid.homo.stat"] <- round(PGLS.B$statistic, 2)
-		anova.fr[i, "PGLS.phyloresid.homo.P"] <- round(PGLS.B$p.value, 4)
+		anova.fr[i, "PGLS.phyloresid.homo.stat"] <- PGLS.B$statistic
+		anova.fr[i, "PGLS.phyloresid.homo.P"] <- PGLS.B$p.value
 		
 		#is lambda 0 for the PGLS residuals?
 		f.r1 <- formula(paste0(ti, " ~ 1"))
@@ -156,10 +156,10 @@ C3C4.ANOVA <- function(trt, data, tree){
 									method = "ML"
 									)	
 
-		anova.fr[i, "PGLS.phyloresid.lambda"] <- round(opt.l.res$maximum, 3)
+		anova.fr[i, "PGLS.phyloresid.lambda"] <- opt.l.res$maximum
 		#approx p-value for lambda == 0
 		pL0.resids <- 1 - pchisq(2 * (PGLS.r1$logLik - LS.r1$logLik), 1)
-		anova.fr[i, "PGLS.phyloresid.lambda.P"] <- round(pL0.resids, 4 )
+		anova.fr[i, "PGLS.phyloresid.lambda.P"] <- pL0.resids
 		
 		#non parametric tests, just in case
 		#formatting the data so these tests work
@@ -370,8 +370,8 @@ phylo.REGRESSION<-function(y.trt, x.trt, data, tree){
 		#what are predictions, ci, significance?
 		#LS
 		R.fr[i, c("LS.intercept", "LS.slope")] <- summary(LS.xy)$tTable[ , "Value"]
-		R.fr[i, c("LS.intercept.F", "LS.slope.F")] <- round(anova(LS.xy)[ , "F-value"], 2)
-		R.fr[i, c("LS.intercept.P", "LS.slope.P")] <- round(anova(LS.xy)[ , "p-value"], 5)
+		R.fr[i, c("LS.intercept.F", "LS.slope.F")] <- anova(LS.xy)[ , "F-value"]
+		R.fr[i, c("LS.intercept.P", "LS.slope.P")] <- anova(LS.xy)[ , "p-value"]
 		#use confint here
 		LSci.nms <- c("LS.intercept.ci95.lo",
 									"LS.slope.ci95.lo",
@@ -380,12 +380,12 @@ phylo.REGRESSION<-function(y.trt, x.trt, data, tree){
 									)
 		R.fr[i, LSci.nms] <- c(confint(LS.xy))
 		#PGLS
-		R.fr[i, "PGLS.lambda"] <- round(opt.l$maximum, 3)
-		R.fr[i, "PGLS.lambda.L"] <- round(2 * (PGLS.xy$logLik - LS.xy$logLik), 2)
-		R.fr[i, "PGLS.lambda.P"] <- round(1 - pchisq(2 * (PGLS.xy$logLik - LS.xy$logLik), 1), 5)
+		R.fr[i, "PGLS.lambda"] <- opt.l$maximum
+		R.fr[i, "PGLS.lambda.L"] <- 2 * (PGLS.xy$logLik - LS.xy$logLik)
+		R.fr[i, "PGLS.lambda.P"] <- 1 - pchisq(2 * (PGLS.xy$logLik - LS.xy$logLik), 1)
 		R.fr[i, c("PGLS.intercept", "PGLS.slope")] <- summary(PGLS.xy)$tTable[ , "Value"]
-		R.fr[i, c("PGLS.intercept.F", "PGLS.slope.F")] <- round(anova(PGLS.xy)[ , "F-value"], 2)
-		R.fr[i, c("PGLS.intercept.P", "PGLS.slope.P")] <- round(anova(PGLS.xy)[ , "p-value"], 5)
+		R.fr[i, c("PGLS.intercept.F", "PGLS.slope.F")] <- anova(PGLS.xy)[ , "F-value"]
+		R.fr[i, c("PGLS.intercept.P", "PGLS.slope.P")] <- anova(PGLS.xy)[ , "p-value"]
 		PGLSci.nms <- c("PGLS.intercept.ci95.lo",
 										"PGLS.slope.ci95.lo",
 										"PGLS.intercept.ci95.hi",
@@ -400,13 +400,13 @@ phylo.REGRESSION<-function(y.trt, x.trt, data, tree){
 		
  		#normality testing for LS.res using Anderson Darling
 		LS.AD<-ad.test( scale( LS.res[,i] ) )
-		R.fr[ i, "LS.resid.norm.stat" ]<-round( LS.AD$statistic, 2 )
-		R.fr[ i, "LS.resid.norm.P" ]<-round( LS.AD$p.value, 5 )
+		R.fr[ i, "LS.resid.norm.stat" ] <- LS.AD$statistic
+		R.fr[ i, "LS.resid.norm.P" ] <- LS.AD$p.value
 		
 		#normality testing for PGLS.res using Anderson Darling
 		PGLS.AD <- ad.test(scale(PGLS.res[ , i]))
-		R.fr[i, "PGLS.phyloresid.norm.stat"] <- round(PGLS.AD$statistic, 2)
-		R.fr[i, "PGLS.phyloresid.norm.P"] <- round(PGLS.AD$p.value, 5)
+		R.fr[i, "PGLS.phyloresid.norm.stat"] <- PGLS.AD$statistic
+		R.fr[i, "PGLS.phyloresid.norm.P"] <- PGLS.AD$p.value
 
 		#is lambda 0 for the PGLS residuals?
 		#null formula for testing lambda of resids	
@@ -434,12 +434,12 @@ phylo.REGRESSION<-function(y.trt, x.trt, data, tree){
 									method = "ML"
 									)
 		#lambda for residuals
-		R.fr[i, "PGLS.phyloresid.lambda"] <- round(PGLS.opt.l.res$maximum, 3)
+		R.fr[i, "PGLS.phyloresid.lambda"] <- PGLS.opt.l.res$maximum
 		#likelihood ratio
-		R.fr[i, "PGLS.phyloresid.lambda.L"] <- round(2 * (PGLS.r1$logLik - LS.r1$logLik), 2)
+		R.fr[i, "PGLS.phyloresid.lambda.L"] <- 2 * (PGLS.r1$logLik - LS.r1$logLik)
 		#approx p-value for lambda==0
 		p.PGLS.resid <- 1 - pchisq(2 * (PGLS.r1$logLik - LS.r1$logLik), 1)
-		R.fr[i, "PGLS.phyloresid.lambda.P"] <- round(p.PGLS.resid, 5)
+		R.fr[i, "PGLS.phyloresid.lambda.P"] <- p.PGLS.resid
 		
 		#there will be a series of warnings here... linked with P == 1 test for slope
 		#output from that test is not relied upon
@@ -468,10 +468,10 @@ phylo.REGRESSION<-function(y.trt, x.trt, data, tree){
 		R.fr[i, c("RMA.intercept.ci95.lo", "RMA.intercept.ci95.hi")] <- ciint.RMA(RMA.xy, x)
 		R.fr[i, c("RMA.slope.ci95.lo", "RMA.slope.ci95.hi")] <- cislope.RMA(RMA.xy)
 		#PRMA
-		R.fr[i, "PRMA.lambda"] <- round(opt.l$maximum, 3)
-		R.fr[i, "PRMA.lambda.L"] <- round(2 * (PRMA.xy$logL - RMA.xy$logL), 2)
+		R.fr[i, "PRMA.lambda"] <- opt.l$maximum
+		R.fr[i, "PRMA.lambda.L"] <- 2 * (PRMA.xy$logL - RMA.xy$logL)
 		p.PRMA.lambda <- 1 - pchisq(2 * (PRMA.xy$logL - RMA.xy$logL), 1)
-		R.fr[i, "PRMA.lambda.P"] <- round(p.PRMA.lambda, 5)
+		R.fr[i, "PRMA.lambda.P"] <- p.PRMA.lambda
 		R.fr[i, c("PRMA.intercept", "PRMA.slope")] <- PRMA.xy$RMA.beta
 		R.fr[i, c("PRMA.intercept.ci95.lo", "PRMA.intercept.ci95.hi")] <- ciint.RMA(PRMA.xy, x)
 		R.fr[i, c("PRMA.slope.ci95.lo", "PRMA.slope.ci95.hi")] <- cislope.RMA(PRMA.xy)
@@ -482,13 +482,13 @@ phylo.REGRESSION<-function(y.trt, x.trt, data, tree){
 
  		#normality testing for RMA.res using Anderson Darling
 		RMA.AD <- ad.test(scale(RMA.res[ , i]))
-		R.fr[i, "RMA.resid.norm.stat"] <- round(RMA.AD$statistic, 2)
-		R.fr[i, "RMA.resid.norm.P"] <- round(RMA.AD$p.value, 5)
+		R.fr[i, "RMA.resid.norm.stat"] <- RMA.AD$statistic
+		R.fr[i, "RMA.resid.norm.P"] <- RMA.AD$p.value
 
 		#normality testing for PRMA.res using Anderson Darling
 		PRMA.AD <- ad.test(scale(PRMA.res[ , i]))
-		R.fr[i, "PRMA.phyloresid.norm.stat"] <- round(PRMA.AD$statistic, 2)
-		R.fr[i, "PRMA.phyloresid.norm.P"] <- round(PRMA.AD$p.value, 5)
+		R.fr[i, "PRMA.phyloresid.norm.stat"] <- PRMA.AD$statistic
+		R.fr[i, "PRMA.phyloresid.norm.P"] <- PRMA.AD$p.value
 		
 		#is lambda 0 for the PRMA residuals?
 		#null formula for testing lambda of resids	is as above	
@@ -516,25 +516,25 @@ phylo.REGRESSION<-function(y.trt, x.trt, data, tree){
 											method = "ML"
 											)
 
-		R.fr[i, "PRMA.phyloresid.lambda"] <- round(PRMA.opt.l.res$maximum, 3)
+		R.fr[i, "PRMA.phyloresid.lambda"] <- PRMA.opt.l.res$maximum
 		#likelihood ratio
 		PRMA.LR <- 2 * (PGLS.PRMAr1$logLik - LS.PRMAr1$logLik)
-		R.fr[i, "PRMA.phyloresid.lambda.L"] <- round(PRMA.LR, 2)
+		R.fr[i, "PRMA.phyloresid.lambda.L"] <- PRMA.LR
 		#approx p-value for lambda == 0
 		p.PRMA.lambda <- 1 - pchisq(2 * (PGLS.PRMAr1$logLik - LS.PRMAr1$logLik), 1)
-		R.fr[i, "PRMA.phyloresid.lambda.P"] <- round(p.PRMA.lambda, 5)
+		R.fr[i, "PRMA.phyloresid.lambda.P"] <- p.PRMA.lambda
 	
 		r.nRMA <- r.RMA(RMA.xy)
-		R.fr[i, "r"] <- round(r.nRMA$r, 3)
-		R.fr[i, "r.t"] <- round(r.nRMA$t.stat, 2)
-		R.fr[i, "r.df"] <- round(r.nRMA$df, 0)
-		R.fr[i, "r.P"] <- round(r.nRMA$P, 5)
+		R.fr[i, "r"] <- r.nRMA$r
+		R.fr[i, "r.t"] <- r.nRMA$t.stat
+		R.fr[i, "r.df"] <- r.nRMA$df
+		R.fr[i, "r.P"] <- r.nRMA$P
 
 		r.PRMA <- r.RMA(PRMA.xy)
-		R.fr[i, "phylo.r"] <- round(r.PRMA$r, 3)
-		R.fr[i, "phylo.r.t"] <- round(r.PRMA$t.stat, 2)
-		R.fr[i, "phylo.r.df"] <- round(r.PRMA$df, 0)
-		R.fr[i, "phylo.r.P"] <- round(r.PRMA$P, 5)
+		R.fr[i, "phylo.r"] <- r.PRMA$r
+		R.fr[i, "phylo.r.t"] <- r.PRMA$t.stat
+		R.fr[i, "phylo.r.df"] <- r.PRMA$df
+		R.fr[i, "phylo.r.P"] <- r.PRMA$P
 		
 		}
 
