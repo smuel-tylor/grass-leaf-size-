@@ -1,5 +1,5 @@
 #plotting residuals for leaf area to demonstrate how our analysis accounts for assumptions
-setwd("C:/Users/taylor53/Dropbox/LA/interpretation/2018paper/2020/Bairdetal_code")
+setwd(choose.dir())
 
 load("Bairdetal_Kew_alt_analyses.Rdata")
 

@@ -4,7 +4,7 @@
 #"Bairdetal_Phylo_functions.R"
 #"Grasses_27sp_traits.csv"
 #"sack27_combined.tre"
-setwd( )
+setwd(choose.dir())
 
 rm(list = ls())
 
@@ -38,7 +38,7 @@ tree27$tip.label <- gsub("Pennisetum_setaceaum", "Cenchrus_setaceus", tree27$tip
 plotTree(tree27)
 
 #dataset
-veins<-read.csv("Grasses_27sp_traits.csv")
+veins <- read.csv("Grasses_27sp_traits.csv")
 #needs a set of tip.labels that match the tree
 veins$tip.label <- veins$Species
 veins$tip.label <- gsub(" ", "_", veins$tip.label)

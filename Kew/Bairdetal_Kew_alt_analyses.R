@@ -8,7 +8,7 @@
 ###"Poaceae_hyp1_allC4_maxcred.txt"
 ##writes csv outputs, and saves the workspace image
 
-setwd( )
+setwd(choose.dir())
 
 rm(list = ls())
 
