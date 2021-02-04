@@ -6,7 +6,7 @@
 #"sack27_combined.tre"
 setwd( )
 
-rm(list=ls())
+rm(list = ls())
 
 #phylo libraries & source code with functions
 library(ape)
@@ -16,7 +16,7 @@ library(nlme)
 library(nortest)
 source("Bairdetal_Phylo_functions.R")
 
-#load phylogeny and traits, and make sure the two have mathing "tip.label"
+#load phylogeny and traits, and make sure the two have matching "tip.label"
 
 #phylogeny
 tree27 <- read.nexus("sack27_combined.tre")
